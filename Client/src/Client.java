@@ -2,7 +2,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 
 public class Client extends JFrame {
@@ -17,17 +20,12 @@ public class Client extends JFrame {
     private JTextField field;
 
     public Client() {
-        // Задаем положение и размеры окна
         setBounds(0, 0, 400, 420);
-        // Задаем заголовок окна
         setTitle("Chat");
-        // Делаем окно видимым
         setVisible(true);
-        // Запрещаем изменять размер окна
         setResizable(false);
-        // Будем завершать приложение при нажатии кнопки "Закрыть"
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        // Создаем объект панели
+
         JPanel panel = new JPanel();
         panel.setLayout(null);
 
@@ -71,7 +69,6 @@ public class Client extends JFrame {
         });
         panel.add(btnSend);
 
-        // Прикрепляем панель к окну
         add(panel);
     }
 
@@ -89,11 +86,13 @@ public class Client extends JFrame {
     }
 
     private void sendMessage(String text) {
-        if (output != null && !text.isEmpty()) new Thread(new Sender(text)).start();
+        if (output != null && !text.isEmpty())
+            new Thread(new Sender(text)).start();
     }
 
     private void disconnect() {
-        new Thread(new Sender("disconnect")).start();
+        if (output != null)
+            new Thread(new Sender("disconnect")).start();
     }
 
     private class Connector implements Runnable {
